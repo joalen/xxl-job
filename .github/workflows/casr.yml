@@ -1,0 +1,48 @@
+name: CASR Runner
+
+on:
+  push:
+
+jobs:
+  run-casr:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        ref: 1af1e82f0e54ff1700abb0b6ffb780dc7349e9ca
+  
+    - name: Set up JDK 17 for project
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        cache: maven
+
+    - name: Build project with JDK 17 
+      run: mvn clean install -DskipTests
+
+    - name: Setup CASR
+      run: |
+        curl -L -o casr-x86_64-unknown-linux-gnu.tar.xz https://github.com/ispras/casr/releases/latest/download/casr-x86_64-unknown-linux-gnu.tar.xz
+        tar -xvf casr-x86_64-unknown-linux-gnu.tar.xz
+        mv casr-x86_64-unknown-linux-gnu /tmp/casr
+        chmod +x /tmp/casr/casr-java
+        echo "/tmp/casr" >> $GITHUB_PATH
+
+    - name: Run CASR on the .java file(s)
+      continue-on-error: true
+      run: |      
+        set +e
+        #!/bin/bash
+
+        directory=$(pwd)
+        
+        jar_files=$(find "$directory" -type f -name "*.jar")
+
+        for jar_file in $jar_files; 
+        do
+            command="casr-java --stdout -- java -jar $jar_file"
+            $command
+        done
