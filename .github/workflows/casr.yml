@@ -1,11 +1,15 @@
-name: CASR Runner
+name: Run CASR
 
 on:
   push:
 
 jobs:
   run-casr:
-    runs-on: ubuntu-latest
+    name: '${{ matrix.os }}'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, macos-latest]
 
     steps:
     - name: Checkout repository
@@ -31,18 +35,32 @@ jobs:
         chmod +x /tmp/casr/casr-java
         echo "/tmp/casr" >> $GITHUB_PATH
 
-    - name: Run CASR on the .java file(s)
+    - name: Run CASR on the .JAR file(s) (macOS)
+      if: runner.os == 'macOS'
       continue-on-error: true
       run: |      
         set +e
         #!/bin/bash
-
         directory=$(pwd)
         
         jar_files=$(find "$directory" -type f -name "*.jar")
-
         for jar_file in $jar_files; 
         do
-            command="casr-java --stdout -- java -jar $jar_file"
+            command="casr-java --stdout -- java -jar $jar_file 2>&1 >/dev/null"
+            $command
+        done
+        
+    - name: Run CASR on the .JAR file(s) (Linux)
+      if: runner.os == 'Linux'
+      continue-on-error: true
+      run: |      
+        set +e
+        #!/bin/bash
+        directory=$(pwd)
+        
+        jar_files=$(find "$directory" -type f -name "*.jar")
+        for jar_file in $jar_files; 
+        do
+            command="casr-java --stdout -- java -jar $jar_file 2>/dev/null"
             $command
         done
