@@ -1,0 +1,81 @@
+name: Run JaCoCo
+
+on:
+  push:
+
+jobs:
+  run-jacoco:
+    name: '${{ matrix.os }}'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, macos-latest]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        ref: 1af1e82f0e54ff1700abb0b6ffb780dc7349e9ca
+  
+    - name: Set up JDK 17 for project
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        cache: maven
+
+    - name: Overwrite old pom.xml
+      run: |
+        curl -o new_pom.xml name: Run JaCoCo
+
+on:
+  push:
+
+jobs:
+  run-jacoco:
+    name: '${{ matrix.os }}'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, macos-latest]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        ref: 1af1e82f0e54ff1700abb0b6ffb780dc7349e9ca
+  
+    - name: Set up JDK 17 for project
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        cache: maven
+
+    - name: Overwrite old pom.xml files
+      run: |
+        curl -o new_pom.xml https://pastebin.com/raw/KVYspir4
+        mv new_pom.xml pom.xml
+        curl -o another_new_pom.xml https://pastebin.com/raw/WArRYYAK
+        mv another_new_pom.xml ./xxl-admin/pom.xml
+        curl -o another_new_pom_two.xml https://pastebin.com/raw/z0UesVpu
+        mv another_new_pom_two.xml ./xxl-job-executor-samples/xxl-job-executor-sample-springboot/pom.xml
+
+    - name: Build project with JDK 17
+      run: mvn test
+
+    - name: Upload JaCoCo reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: jacoco-report-${{ github.event.repository.name }}
+        path: '**/target/site/jacoco/**/*.html'
+        mv new_pom.xml pom.xml
+
+    - name: Build project with JDK 17
+      run: mvn test
+
+    - name: Upload JaCoCo reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: jacoco-report-${{ github.event.repository.name }}
+        path: '**/target/site/jacoco/**/*.html'
