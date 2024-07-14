@@ -69,7 +69,6 @@ jobs:
       with:
         name: jacoco-report-${{ github.event.repository.name }}
         path: '**/target/site/jacoco/**/*.html'
-        mv new_pom.xml pom.xml
 
     - name: Build project with JDK 17
       run: mvn test
