@@ -29,7 +29,7 @@ jobs:
         curl -o new_pom.xml https://pastebin.com/raw/KVYspir4
         mv new_pom.xml pom.xml
         curl -o another_new_pom.xml https://pastebin.com/raw/WArRYYAK
-        mv another_new_pom.xml ./xxl-admin/pom.xml
+        mv another_new_pom.xml ./xxl-job-admin/pom.xml
         curl -o another_new_pom_two.xml https://pastebin.com/raw/z0UesVpu
         mv another_new_pom_two.xml ./xxl-job-executor-samples/xxl-job-executor-sample-springboot/pom.xml
 
