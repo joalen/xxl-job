@@ -53,7 +53,8 @@ jobs:
     - name: Run CASR on the .JAR file(s) (Linux)
       if: runner.os == 'Linux'
       continue-on-error: true
-      run: |      
+      run: |   
+        mkdir casr_reports
         set +e
         #!/bin/bash
         directory=$(pwd)
@@ -62,5 +63,11 @@ jobs:
         for jar_file in $jar_files; 
         do
             command="casr-java --stdout -- java -jar $jar_file 2>/dev/null"
-            $command
+            $command > "./casr_reports/${main_class}_casr_report.txt"
         done
+        
+    - name: Upload CASR reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: casr-report-${{ github.event.repository.name}}-on-${{ matrix.os }}-from_branch_${{ github.ref_name }}
+        path: './casr_reports/*'
