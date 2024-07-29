@@ -47,6 +47,10 @@ jobs:
         set +e
         #!/bin/bash
         directory=$(pwd)
+
+        sanitize_filename() {
+            echo "$1" | tr -d '\r\n' | tr -c 'a-zA-Z0-9.-' '_'
+        }
         
         jar_files=$(find "$directory" -type f -name "*.jar")
         for jar_file in $jar_files; 
@@ -64,6 +68,10 @@ jobs:
         set +e
         #!/bin/bash
         directory=$(pwd)
+
+        sanitize_filename() {
+            echo "$1" | tr -d '\r\n' | tr -c 'a-zA-Z0-9.-' '_'
+        }
         
         jar_files=$(find "$directory" -type f -name "*.jar")
         for jar_file in $jar_files; 
